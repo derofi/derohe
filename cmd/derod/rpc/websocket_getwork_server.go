@@ -291,7 +291,7 @@ func onWebsocket(w http.ResponseWriter, r *http.Request) {
 		//panic(err)
 		return
 	}
-	wsConn := conn.(*websocket.Conn)
+	wsConn := conn
 
 	session := user_session{address: *addr, address_sum: graviton.Sum(addr_raw)}
 	wsConn.SetSession(&session)
