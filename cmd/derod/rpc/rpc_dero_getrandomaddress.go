@@ -90,7 +90,7 @@ func GetRandomAddress(ctx context.Context, p rpc.GetRandomAddress_Params) (resul
 				continue
 			}
 
-			if bytes.Compare(v, v_old) != 0 {
+			if !bytes.Equal(v, v_old) {
 				continue
 			}
 
