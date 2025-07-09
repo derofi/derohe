@@ -18,18 +18,21 @@
 
 package metrics
 
-import "fmt"
-import "io"
-import "os"
-import "time"
-import "bytes"
-import "net"
-import "net/url"
-import "net/http"
-import "path/filepath"
-import "github.com/go-logr/logr"
-import "github.com/VictoriaMetrics/metrics"
-import "github.com/xtaci/kcp-go/v5"
+import (
+	"bytes"
+	"fmt"
+	"io"
+	"net"
+	"net/http"
+	"net/url"
+	"os"
+	"path/filepath"
+	"time"
+
+	"github.com/VictoriaMetrics/metrics"
+	"github.com/go-logr/logr"
+	"github.com/xtaci/kcp-go/v5"
+)
 
 // these are exported by the daemon for various analysis
 var Version string //this is later converted to metrics format
@@ -86,7 +89,10 @@ func writePrometheusMetrics(w io.Writer) {
 	fmt.Fprintf(w, "KCP_FECRecovered %d\n", kcp.DefaultSnmp.FECRecovered)
 	fmt.Fprintf(w, "KCP_FECErrs %d\n", kcp.DefaultSnmp.FECErrs)
 	fmt.Fprintf(w, "KCP_FECParityShards %d\n", kcp.DefaultSnmp.FECParityShards)
-	fmt.Fprintf(w, "KCP_FECShortShards %d\n", kcp.DefaultSnmp.FECShortShards)
+	// KCP author decreprecated ShortShardSet:
+	// https://github.com/xtaci/kcp-go/commit/4338d9c2a6a8f51edb7a9345b92a339f5da0e318
+	// With:
+	fmt.Fprintf(w, "KCP_FECShardSet %d\n", kcp.DefaultSnmp.FECShardSet)
 
 }
 
