@@ -371,7 +371,7 @@ func Getwork_server() {
 			if miners_count > 0 {
 				current_mini_count := chain.MiniBlocks.Count()
 				current_height := chain.Get_Height()
-				if old_mini_count != current_mini_count || old_height != current_height || time.Now().Sub(old_time) > sleeptime {
+				if old_mini_count != current_mini_count || old_height != current_height || time.Since(old_time) > sleeptime {
 					old_mini_count = current_mini_count
 					old_height = current_height
 					SendJob()
