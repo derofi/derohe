@@ -41,19 +41,19 @@ func GetInfo(ctx context.Context) (result rpc.GetInfo_Result, err error) {
 	result.TopoHeight = chain.Load_TOPO_HEIGHT()
 
 	{
-		version, err := chain.ReadBlockSnapshotVersion(chain.Get_Top_ID())
-		if err != nil {
-			panic(err)
+		version, versionErr := chain.ReadBlockSnapshotVersion(chain.Get_Top_ID())
+		if versionErr != nil {
+			panic(versionErr)
 		}
-		balance_merkle_hash, err := chain.Load_Merkle_Hash(version)
-		if err != nil {
-			panic(err)
+		balance_merkle_hash, merkleErr := chain.Load_Merkle_Hash(version)
+		if merkleErr != nil {
+			panic(merkleErr)
 		}
 		result.Merkle_Balance_TreeHash = fmt.Sprintf("%X", balance_merkle_hash[:])
 	}
 
-	blid, err := chain.Load_Block_Topological_order_at_index(result.TopoHeight)
-	if err == nil {
+	blid, blockErr := chain.Load_Block_Topological_order_at_index(result.TopoHeight)
+	if blockErr == nil {
 		result.Difficulty = chain.Get_Difficulty_At_Tips(chain.Get_TIPS()).Uint64()
 	}
 
@@ -63,8 +63,8 @@ func GetInfo(ctx context.Context) (result rpc.GetInfo_Result, err error) {
 	result.Target = chain.Get_Current_BlockTime()
 
 	if result.TopoHeight-chain.LocatePruneTopo() > 100 {
-		blid50, err := chain.Load_Block_Topological_order_at_index(result.TopoHeight - 50)
-		if err == nil {
+		blid50, block50Err := chain.Load_Block_Topological_order_at_index(result.TopoHeight - 50)
+		if block50Err == nil {
 			now := chain.Load_Block_Timestamp(blid)
 			now50 := chain.Load_Block_Timestamp(blid50)
 			result.AverageBlockTime50 = float32(now-now50) / (50.0 * 1000)

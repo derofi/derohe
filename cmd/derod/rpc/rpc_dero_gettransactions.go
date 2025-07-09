@@ -108,22 +108,21 @@ func GetTransaction(ctx context.Context, p rpc.GetTransaction_Params) (result rp
 
 						if tx.TransactionType != transaction.REGISTRATION {
 							// we must now fill in compressed ring members
-							if toporecord, err := chain.Store.Topo_store.Read(topo_height); err == nil {
-								if ss, err := chain.Store.Balance_store.LoadSnapshot(toporecord.State_Version); err == nil {
+							if toporecord, topoErr := chain.Store.Topo_store.Read(topo_height); topoErr == nil {
+									if ss, snapshotErr := chain.Store.Balance_store.LoadSnapshot(toporecord.State_Version); snapshotErr == nil {
 
 									if tx.TransactionType == transaction.SC_TX {
 										scid := tx.GetHash()
 										if tx.SCDATA.Has(rpc.SCACTION, rpc.DataUint64) && rpc.SC_INSTALL == rpc.SC_ACTION(tx.SCDATA.Value(rpc.SCACTION, rpc.DataUint64).(uint64)) {
 
-											if sc_data_tree, err := ss.GetTree(string(scid[:])); err == nil {
-												var code_bytes []byte
-												if code_bytes, err = sc_data_tree.Get(dvm.SC_Code_Key(scid)); err == nil {
+											if sc_data_tree, treeErr := ss.GetTree(string(scid[:])); treeErr == nil {
+												if code_bytes, codeErr := sc_data_tree.Get(dvm.SC_Code_Key(scid)); codeErr == nil {
 													related.Code = string(code_bytes)
 
 												}
 
 												var zerohash crypto.Hash
-												if balance_bytes, err := sc_data_tree.Get(zerohash[:]); err == nil {
+												if balance_bytes, balanceErr := sc_data_tree.Get(zerohash[:]); balanceErr == nil {
 													if len(balance_bytes) == 8 {
 														related.Balance = binary.BigEndian.Uint64(balance_bytes[:])
 													}
@@ -151,9 +150,9 @@ func GetTransaction(ctx context.Context, p rpc.GetTransaction_Params) (result rp
 										related.Ring = append(related.Ring, ring)
 									}
 
-									if signer, err1 := blockchain.Extract_signer(&tx); err1 == nil {
+									if signer, signerErr := blockchain.Extract_signer(&tx); signerErr == nil {
 										var p bn256.G1
-										if err = p.DecodeCompressed(signer[:]); err == nil {
+										if decodeErr := p.DecodeCompressed(signer[:]); decodeErr == nil {
 											s := rpc.NewAddressFromKeys((*crypto.Point)(&p))
 											s.Mainnet = globals.Config.Name == config.Mainnet.Name
 											related.Signer = s.String()

@@ -78,7 +78,7 @@ func GetSC(ctx context.Context, p rpc.GetSC_Params) (result rpc.GetSC_Result, er
 			sc_data_tree, err = ss.GetTree(string(scid[:]))
 			if err == nil {
 				var zerohash crypto.Hash
-				if balance_bytes, err := sc_data_tree.Get(zerohash[:]); err == nil {
+				if balance_bytes, balanceErr := sc_data_tree.Get(zerohash[:]); balanceErr == nil {
 					if len(balance_bytes) == 8 {
 						result.Balance = binary.BigEndian.Uint64(balance_bytes[:])
 					}

@@ -321,9 +321,9 @@ func Getwork_server() {
 	default_address := fmt.Sprintf("0.0.0.0:%d", globals.Config.GETWORK_Default_Port)
 
 	if _, ok := globals.Arguments["--getwork-bind"]; ok && globals.Arguments["--getwork-bind"] != nil {
-		addr, err := net.ResolveTCPAddr("tcp", globals.Arguments["--getwork-bind"].(string))
-		if err != nil {
-			logger_getwork.Error(err, "--getwork-bind address is invalid")
+		addr, resolveErr := net.ResolveTCPAddr("tcp", globals.Arguments["--getwork-bind"].(string))
+		if resolveErr != nil {
+			logger_getwork.Error(resolveErr, "--getwork-bind address is invalid")
 			return
 		} else {
 			if addr.Port == 0 {

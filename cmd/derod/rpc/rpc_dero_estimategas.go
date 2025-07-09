@@ -44,7 +44,7 @@ func GetGasEstimate(ctx context.Context, p rpc.GasEstimate_Params) (result rpc.G
 	}()
 
 	if len(p.SC_Code) >= 1 && !strings.Contains(strings.ToLower(p.SC_Code), "initialize") { // decode SC from base64 if possible, since json hash limitations
-		if sc, err := base64.StdEncoding.DecodeString(p.SC_Code); err == nil {
+		if sc, decodeErr := base64.StdEncoding.DecodeString(p.SC_Code); decodeErr == nil {
 			p.SC_Code = string(sc)
 		}
 	}
