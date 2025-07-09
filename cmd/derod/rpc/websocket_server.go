@@ -16,36 +16,36 @@
 
 package rpc
 
-import (
-	"context"
-	"encoding/json"
-	"fmt"
-	"io"
-	"net"
-	"net/http"
-	"net/http/pprof"
-	"os"
-	"runtime/debug"
-	"sort"
-	"strings"
-	"sync"
-	"sync/atomic"
-	"time"
+import "io"
+import "os"
+import "net"
+import "fmt"
+import "net/http"
+import "net/http/pprof"
+import "time"
+import "sort"
+import "sync"
+import "sync/atomic"
+import "context"
+import "strings"
+import "runtime/debug"
 
-	"github.com/creachadair/jrpc2"
-	"github.com/creachadair/jrpc2/channel"
-	"github.com/creachadair/jrpc2/handler"
-	"github.com/creachadair/jrpc2/jhttp"
-	"github.com/derofi/derohe/blockchain"
-	"github.com/derofi/derohe/config"
-	"github.com/derofi/derohe/globals"
-	"github.com/derofi/derohe/glue/rwc"
-	"github.com/derofi/derohe/metrics"
-	"github.com/go-logr/logr"
-	"github.com/gorilla/websocket"
-)
+
+import "github.com/derofi/derohe/config"
+import "github.com/derofi/derohe/globals"
+import "github.com/derofi/derohe/blockchain"
+import "github.com/derofi/derohe/glue/rwc"
+import "github.com/derofi/derohe/metrics"
+
+import "github.com/go-logr/logr"
+import "github.com/gorilla/websocket"
+
+import "github.com/creachadair/jrpc2"
+import "github.com/creachadair/jrpc2/handler"
+import "github.com/creachadair/jrpc2/channel"
 
 //import "github.com/creachadair/jrpc2/server"
+import "github.com/creachadair/jrpc2/jhttp"
 
 /* this file implements the rpcserver api, so as wallet and block explorer tools can work without migration */
 
@@ -64,9 +64,9 @@ var logger logr.Logger
 
 var client_connections sync.Map
 
-var options = &jrpc2.ServerOptions{AllowPush: true, RPCLog: metrics_generator{}, DecodeContext: func(ctx context.Context, method string, param json.RawMessage) (context.Context, json.RawMessage, error) {
+var options = &jrpc2.ServerOptions{AllowPush: true, RPCLog: metrics_generator{}, NewContext: func() context.Context {
 	t := time.Now()
-	return context.WithValue(ctx, "start_time", &t), param, nil
+	return context.WithValue(context.Background(), "start_time", &t)
 }}
 
 type metrics_generator struct{}
