@@ -12,7 +12,7 @@
 *.out
 
 # Dependency directories (remove the comment below to include it)
-# vendor/
+vendor/
 
 # Go workspace file
 go.work
@@ -140,7 +140,8 @@ data/
 chaindata/
 
 # DERO specific files
-*.derod
+cmd/derod/derod
+/derod
 *.dero-wallet-cli
 *.dero-wallet-rpc
 *.wallet
@@ -250,4 +251,3 @@ cscope.out
 cscope.po.out
 cscope.tmp
 /cmd/derod/mainnet
-derod
