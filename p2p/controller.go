@@ -16,40 +16,36 @@
 
 package p2p
 
-import "fmt"
-import "net"
+import (
+	"crypto/ecdsa"
+	"crypto/elliptic"
+	"crypto/rand"
+	"crypto/sha1"
+	"crypto/tls"
+	"crypto/x509"
+	"encoding/pem"
+	"fmt"
+	"math/big"
+	"net"
+	"os"
+	"runtime/debug"
+	"sort"
+	"strconv"
+	"strings"
+	"sync"
+	"sync/atomic"
+	"time"
 
-import "os"
-import "time"
-import "sort"
-import "sync"
-import "strings"
-import "math/big"
-import "strconv"
-
-import "crypto/sha1"
-import "crypto/ecdsa"
-import "crypto/elliptic"
-
-import "crypto/tls"
-import "crypto/rand"
-import "crypto/x509"
-import "encoding/pem"
-import "sync/atomic"
-import "runtime/debug"
-
-import "github.com/go-logr/logr"
-
-import "github.com/derofi/derohe/config"
-import "github.com/derofi/derohe/globals"
-import "github.com/derofi/derohe/metrics"
-import "github.com/derofi/derohe/blockchain"
-
-import "github.com/xtaci/kcp-go/v5"
-import "golang.org/x/crypto/pbkdf2"
-import "golang.org/x/time/rate"
-
-import "github.com/cenkalti/rpc2"
+	"github.com/cenkalti/rpc2"
+	"github.com/derofi/derohe/blockchain"
+	"github.com/derofi/derohe/config"
+	"github.com/derofi/derohe/globals"
+	"github.com/derofi/derohe/metrics"
+	"github.com/go-logr/logr"
+	"github.com/xtaci/kcp-go/v5"
+	"golang.org/x/crypto/pbkdf2"
+	"golang.org/x/time/rate"
+)
 
 //import "github.com/txthinking/socks5"
 
@@ -278,6 +274,7 @@ func P2P_engine() {
 }
 
 func tunekcp(conn *kcp.UDPSession) {
+	conn.SetMtu(1200)
 	conn.SetACKNoDelay(true)
 	if os.Getenv("TURBO") == "0" {
 		conn.SetNoDelay(1, 10, 2, 1) // tuning paramters for local stack for fast retransmission stack
