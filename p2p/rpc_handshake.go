@@ -16,17 +16,18 @@
 
 package p2p
 
-import "fmt"
-import "net"
-import "bytes"
-import "context"
+import (
+	"bytes"
+	"context"
+	"fmt"
+	"net"
+	"sync/atomic"
+	"time"
 
-import "sync/atomic"
-import "time"
-
-import "github.com/derofi/derohe/config"
-import "github.com/derofi/derohe/globals"
-import "github.com/blang/semver/v4"
+	"github.com/blang/semver/v4"
+	"github.com/derofi/derohe/config"
+	"github.com/derofi/derohe/globals"
+)
 
 // verify incoming handshake for number of checks such as mainnet/testnet etc etc
 func Verify_Handshake(handshake *Handshake_Struct) bool {
@@ -71,7 +72,8 @@ func (connection *Connection) dispatch_test_handshake() {
 	//scan our peer list and send peers which have been recently communicated
 	request.PeerList = get_peer_list_specific(Address(connection))
 
-	ctx, cancel := context.WithTimeout(context.Background(), 4*time.Second)
+	// we must complete handshake within 10 seconds
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	if err := connection.Client.CallWithContext(ctx, "Peer.Handshake", request, &response); err != nil {
 		connection.logger.V(4).Error(err, "cannot handshake")
