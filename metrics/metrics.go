@@ -93,6 +93,10 @@ func writePrometheusMetrics(w io.Writer) {
 	// https://github.com/xtaci/kcp-go/commit/4338d9c2a6a8f51edb7a9345b92a339f5da0e318
 	// With:
 	fmt.Fprintf(w, "KCP_FECShardSet %d\n", kcp.DefaultSnmp.FECShardSet)
+	fmt.Fprintf(w, "KCP_FECShardMin %d\n", kcp.DefaultSnmp.FECShardMin)
+	fmt.Fprintf(w, "KCP_RingBufferSndQueue %d\n", kcp.DefaultSnmp.RingBufferSndQueue)
+	fmt.Fprintf(w, "KCP_RingBufferRcvQueue %d\n", kcp.DefaultSnmp.RingBufferRcvQueue)
+	fmt.Fprintf(w, "KCP_RingBufferSndBuffer %d\n", kcp.DefaultSnmp.RingBufferSndBuffer)
 
 }
 
